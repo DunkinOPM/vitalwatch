@@ -1,0 +1,66 @@
+/* Basic reset and minimal styling */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Courier New', Courier, monospace;
+  background-color: #0f172a;
+  color: #f8fafc;
+  margin: 0;
+  padding: 0;
+}
+
+.vital-card {
+  background-color: #1e293b;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 4px;
+  flex: 1;
+  min-width: 120px;
+}
+
+.patient-card {
+  background-color: #334155;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.ward-card {
+  border: 1px solid #475569;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.alert-feed {
+  background-color: #1e293b;
+  border-left: 1px solid #475569;
+  padding: 16px;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 12px;
+  margin-right: 8px;
+}
+
+.badge-red { background-color: #ef4444; color: white; }
+.badge-yellow { background-color: #eab308; color: black; }
+.badge-green { background-color: #22c55e; color: white; }
+
+.alert-row {
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background-color: #334155;
+}
+
+.alert-row.critical { border-left: 4px solid #ef4444; }
+.alert-row.warning { border-left: 4px solid #eab308; }
