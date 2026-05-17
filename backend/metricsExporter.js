@@ -34,9 +34,16 @@ const warningsTotalCounter = new client.Counter({
 });
 register.registerMetric(warningsTotalCounter);
 
+const simSpeedGauge = new client.Gauge({
+  name: 'vitalwatch_sim_speed_multiplier',
+  help: 'Simulation engine speed multiplier (1 = normal, 10 = chaos)'
+});
+register.registerMetric(simSpeedGauge);
+simSpeedGauge.set(1);
+
 function updateAlertMetrics(activeAlerts, allAlertsInTick) {
   activeAlertsGauge.set(activeAlerts.length);
-  
+
   allAlertsInTick.forEach(alert => {
     if (alert.level === 'CRITICAL') {
       criticalAlertsCounter.inc();
@@ -50,8 +57,18 @@ function recordApiRequest() {
   apiRequestsCounter.inc();
 }
 
+function updateSimSpeed(multiplier) {
+  simSpeedGauge.set(multiplier);
+}
+
+function updatePatientsMonitored(count) {
+  patientsMonitoredGauge.set(count);
+}
+
 module.exports = {
   register,
   updateAlertMetrics,
-  recordApiRequest
+  recordApiRequest,
+  updateSimSpeed,
+  updatePatientsMonitored
 };

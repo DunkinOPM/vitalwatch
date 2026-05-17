@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import PatientCard from './PatientCard';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { apiFetch } from '../api';
 
 function WardOverview({ patients }) {
   const [beds, setBeds] = useState(null);
@@ -10,7 +9,7 @@ function WardOverview({ patients }) {
   useEffect(() => {
     const fetchBeds = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/beds`);
+        const res = await apiFetch('/api/beds');
         if (res.ok) setBeds(await res.json());
       } catch (err) {
         console.error("Error fetching beds", err);
@@ -30,7 +29,7 @@ function WardOverview({ patients }) {
 
         const hasCritical = wardPatients.some(p => p.status === 'CRITICAL');
         const hasWarning = wardPatients.some(p => p.status === 'WARNING');
-        
+
         let badgeClass = 'badge-green';
         let badgeText = '0 Alerts';
         let alertCount = wardPatients.reduce((sum, p) => sum + (p.alerts ? p.alerts.length : 0), 0);
@@ -46,7 +45,7 @@ function WardOverview({ patients }) {
               </h3>
               <span className={`badge ${badgeClass}`}>{badgeText}</span>
             </div>
-            
+
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
               {wardPatients.map(patient => (
                 <PatientCard key={patient.id} patient={patient} />

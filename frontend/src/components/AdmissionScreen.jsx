@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { apiFetch } from '../api';
 
 function AdmissionScreen({ onEnterDashboard }) {
   const [beds, setBeds] = useState(null);
@@ -10,7 +9,7 @@ function AdmissionScreen({ onEnterDashboard }) {
 
   const fetchBeds = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/beds`);
+      const res = await apiFetch('/api/beds');
       if (res.ok) setBeds(await res.json());
     } catch (err) {
       console.error("Error fetching beds", err);
@@ -32,9 +31,8 @@ function AdmissionScreen({ onEnterDashboard }) {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/api/patients/admit`, {
+      const res = await apiFetch('/api/patients/admit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
       const data = await res.json();
@@ -54,7 +52,6 @@ function AdmissionScreen({ onEnterDashboard }) {
     }
   };
 
-  // Check if selected ward is full
   const selectedWardIsFull = beds && beds[formData.ward] && beds[formData.ward].available === 0;
 
   return (
@@ -129,7 +126,7 @@ function AdmissionScreen({ onEnterDashboard }) {
               </div>
             )}
           </div>
-          
+
           <button type="submit" disabled={selectedWardIsFull || loading} style={{ padding: '12px', backgroundColor: selectedWardIsFull ? '#64748b' : '#3b82f6', color: 'white', border: 'none', borderRadius: '4px', cursor: selectedWardIsFull ? 'not-allowed' : 'pointer', fontWeight: 'bold', marginTop: '16px' }}>
             {loading ? 'Admitting...' : 'Admit Patient'}
           </button>
