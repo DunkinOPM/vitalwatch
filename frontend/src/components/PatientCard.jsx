@@ -1,12 +1,38 @@
+import { useState } from 'react';
 import VitalCard from './VitalCard';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 function PatientCard({ patient }) {
+  const [discharged, setDischarged] = useState(false);
   const statusColor = patient.status === 'CRITICAL' ? 'red' : patient.status === 'WARNING' ? 'yellow' : 'green';
+
+  const handleDischarge = async (id) => {
+    if (window.confirm(`Discharge ${patient.name}? Bed ${patient.bedId} will be freed immediately.`)) {
+      try {
+        const res = await fetch(`${API_URL}/api/patients/${id}/discharge`, { method: 'POST' });
+        if (res.ok) {
+          setDischarged(true);
+          // Simple toast implementation via alert for now, or just let polling handle UI
+          alert(`Patient discharged. Bed ${patient.bedId} is now available.`);
+        } else {
+          alert('Failed to discharge patient');
+        }
+      } catch (err) {
+        console.error("Error discharging patient", err);
+      }
+    }
+  };
+
+  if (discharged) return null;
 
   return (
     <div className="patient-card" style={{ flex: '1 1 calc(50% - 16px)', minWidth: '300px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-        <h4 style={{ margin: 0 }}>{patient.name} ({patient.id})</h4>
+        <div>
+          <h4 style={{ margin: 0 }}>{patient.name} ({patient.id})</h4>
+          <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '4px' }}>Ward: {patient.ward} | Bed: {patient.bedId}</div>
+        </div>
         <span className={`badge badge-${statusColor}`}>{patient.status}</span>
       </div>
       
@@ -29,6 +55,14 @@ function PatientCard({ patient }) {
           </ul>
         </div>
       )}
+
+      <div style={{ marginTop: '16px', textAlign: 'right' }}>
+        <button 
+          onClick={() => handleDischarge(patient.id)}
+          style={{ padding: '6px 12px', backgroundColor: 'transparent', color: '#ef4444', border: '1px solid #ef4444', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}>
+          ❌ Discharge Patient
+        </button>
+      </div>
     </div>
   );
 }

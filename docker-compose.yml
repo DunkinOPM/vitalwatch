@@ -20,6 +20,26 @@ services:
     networks:
       - vitalwatch-net
 
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - vitalwatch-net
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - vitalwatch-net
+    depends_on:
+      - prometheus
+
 networks:
   vitalwatch-net:
     driver: bridge

@@ -1,7 +1,25 @@
+import { useState, useEffect } from 'react';
 import PatientCard from './PatientCard';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 function WardOverview({ patients }) {
+  const [beds, setBeds] = useState(null);
   const wards = ['ICU', 'General', 'Emergency'];
+
+  useEffect(() => {
+    const fetchBeds = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/beds`);
+        if (res.ok) setBeds(await res.json());
+      } catch (err) {
+        console.error("Error fetching beds", err);
+      }
+    };
+    fetchBeds();
+    const interval = setInterval(fetchBeds, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div>
@@ -23,7 +41,9 @@ function WardOverview({ patients }) {
         return (
           <div key={ward} className="ward-card">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <h3 style={{ margin: 0 }}>{ward} Ward ({wardPatients.length} Patients)</h3>
+              <h3 style={{ margin: 0 }}>
+                {ward} Ward {beds && beds[ward] ? `— ${beds[ward].occupied}/${beds[ward].total} beds occupied` : `(${wardPatients.length} Patients)`}
+              </h3>
               <span className={`badge ${badgeClass}`}>{badgeText}</span>
             </div>
             

@@ -1,10 +1,10 @@
-const patients = [
-  { id: "P001", name: "Patient 001", ward: "ICU", offset: 0 },
-  { id: "P002", name: "Patient 002", ward: "ICU", offset: 8 },
-  { id: "P003", name: "Patient 003", ward: "General", offset: -5 },
-  { id: "P004", name: "Patient 004", ward: "General", offset: 12 },
-  { id: "P005", name: "Patient 005", ward: "Emergency", offset: 15 },
-  { id: "P006", name: "Patient 006", ward: "Emergency", offset: -3 }
+let patients = [
+  { id: "P001", name: "Patient P001", age: 45, ward: "ICU", bedId: "ICU-1", offset: 0, admittedAt: new Date().toISOString() },
+  { id: "P002", name: "Patient P002", age: 62, ward: "ICU", bedId: "ICU-2", offset: 8, admittedAt: new Date().toISOString() },
+  { id: "P003", name: "Patient P003", age: 34, ward: "General", bedId: "GEN-1", offset: -5, admittedAt: new Date().toISOString() },
+  { id: "P004", name: "Patient P004", age: 50, ward: "General", bedId: "GEN-2", offset: 12, admittedAt: new Date().toISOString() },
+  { id: "P005", name: "Patient P005", age: 28, ward: "Emergency", bedId: "EMR-1", offset: 15, admittedAt: new Date().toISOString() },
+  { id: "P006", name: "Patient P006", age: 71, ward: "Emergency", bedId: "EMR-2", offset: -3, admittedAt: new Date().toISOString() }
 ];
 
 const patientHistory = {}; // rolling history of last 5 readings
@@ -50,8 +50,20 @@ function getHistory(patientId) {
   return patientHistory[patientId] || [];
 }
 
+function addPatient(patient) {
+  patients.push(patient);
+  patientHistory[patient.id] = [];
+}
+
+function removePatient(patientId) {
+  patients = patients.filter(p => p.id !== patientId);
+  delete patientHistory[patientId];
+}
+
 module.exports = {
   updateVitals,
   getPatients,
-  getHistory
+  getHistory,
+  addPatient,
+  removePatient
 };
